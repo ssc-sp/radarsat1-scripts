@@ -1,15 +1,58 @@
+# Databricks notebook source
+# MAGIC %md
+# MAGIC # Get Metadata
+# MAGIC 
+# MAGIC These are a series of functions that allow you to access the metadata from the images in the S3 bucket.
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Setup
+# MAGIC 
+# MAGIC We first have to run a pip install of geopy. You also need boto3 if it's not already installed.
+
+# COMMAND ----------
+
+# MAGIC %pip install geopy
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Configuration
+# MAGIC 
+# MAGIC Importing the necessary packages and setting up some variables we'll be needing to access the files.
+
+# COMMAND ----------
+
 import pandas as pd
 import boto3
 from botocore import UNSIGNED
 from botocore.config import Config
 from geopy.geocoders import Nominatim
+from geopy.point import Point
 
 # Setting up access
 BUCKET_NAME = 'radarsat-r1-l1-cog'
 s3client = boto3.client('s3', config=Config(signature_version=UNSIGNED))
 paginator = s3client.get_paginator('list_objects_v2')
 
-def get_data_from_month(year = -1, month = -1, country_name=None, attribute_name=None, attribute_value=None, to_csv=True):
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Functions
+# MAGIC 
+# MAGIC These are the two functions that allow us to retrieve the metadata
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### get_data_from_month
+# MAGIC 
+# MAGIC This function retrieves the metadata for a single month of a single year.
+
+# COMMAND ----------
+
+def get_data_from_month(year = -1, month = -1, country_name=None, attribute_name=None, attribute_value=None, to_csv=False):
     """Gets the data from the S3 bucket for a given month / year.
 
     :param year: Year of the data to be downloaded.
@@ -70,11 +113,10 @@ def get_data_from_month(year = -1, month = -1, country_name=None, attribute_name
                     test = metadata['Metadata']['scene-centre']
                     coords = test.split("(")[1].split(" ")
                     coords[1] = coords[1].replace(")", "")
-                    coordinates = coords[0] + ', ' + coords[1]
 
                     # We use the geopy library to get the country name from the longitude and latitude
                     geolocator = Nominatim(user_agent="radarsat-r1-l1-cog")
-                    location = geolocator.reverse(coordinates, language='en')
+                    location = geolocator.reverse(Point(coords[1], coords[0]), language='en')
                     if location: # If the location is not null, we can continue
                         if location.address: # Same with address being not null
                             # We can then parse the country, depending what the type of location address is
@@ -118,14 +160,21 @@ def get_data_from_month(year = -1, month = -1, country_name=None, attribute_name
     column_names = list.pop(0)
 
     # We can then look for errors in the data
-    df = pd.DataFrame(list, columns=column_names)
+#     df = pd.DataFrame(list, columns=column_names)
+    df = spark.createDataFrame(data = list, schema = column_names)
 
-    # We can then create a dataframe and return it
-    if to_csv:
-        df.to_csv(str(year) + '-' + str(month) + "_data.csv")
     return df
 
-def get_data_from_date_range(start_year=1996, start_month=3, end_year=2013, end_month=3, country_name=None, attribute_name=None, attribute_value=None, to_csv=True):
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### get_data_from_date_range
+# MAGIC 
+# MAGIC This allows the user to give a start + end point for the metadata collection. Runs the preceding function and combines all the monthly metadata.
+
+# COMMAND ----------
+
+def get_data_from_date_range(start_year=1996, start_month=3, end_year=2013, end_month=3, country_name=None, attribute_name=None, attribute_value=None, to_csv=False):
     """Gets all the data from the S3 bucket for a given date range.
 
     :param start_year: Year of the start of the date range.
@@ -147,7 +196,7 @@ def get_data_from_date_range(start_year=1996, start_month=3, end_year=2013, end_
         end_month = 3
 
     # Initialize an empty dataframe
-    super_data = pd.DataFrame()
+    super_data = None
 
     # Iterate through the years
     while start_year <= end_year:
@@ -160,12 +209,28 @@ def get_data_from_date_range(start_year=1996, start_month=3, end_year=2013, end_
             break
 
         # We then get the data for the current month
-        if super_data.empty: # If the dataframe is empty, we just start it with the data
+        if not super_data or len(super_data.head(1)) <= 0: # If the dataframe is empty, we just start it with the data
             super_data = get_data_from_month(start_year, start_month, country_name, attribute_name, attribute_value, False)
         else: # Otherwise, we append the data for the current month
             data = get_data_from_month(start_year, start_month, country_name, attribute_name, attribute_value, False)
-            super_data = super_data.append(data, ignore_index = True)
+            super_data = super_data.union(data)
         start_month += 1
     if to_csv:
-        super_data.to_csv("data.csv")
+        super_data.write.csv("/tmp/spark_output/csv3")
     return super_data
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Demo
+# MAGIC 
+# MAGIC We now do a brief demonstration of the function, collecting metadata from March to June of 2007 for images taken in Canada
+
+# COMMAND ----------
+
+output = get_data_from_date_range(2007, 3, 2007, 6, 'canada')
+output.show()
+
+# COMMAND ----------
+
+output.toPandas()
