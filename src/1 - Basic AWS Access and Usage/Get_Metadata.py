@@ -52,7 +52,7 @@ paginator = s3client.get_paginator('list_objects_v2')
 
 # COMMAND ----------
 
-def get_data_from_month(year = -1, month = -1, country_name=None, attribute_name=None, attribute_value=None, to_csv=False):
+def get_data_from_month(year = -1, month = -1, country_name=None, attribute_name=None, attribute_value=None, to_csv=False, printing=False):
     """Gets the data from the S3 bucket for a given month / year.
 
     :param year: Year of the data to be downloaded.
@@ -70,7 +70,9 @@ def get_data_from_month(year = -1, month = -1, country_name=None, attribute_name
         prefix = str(year) + "/"
     else:
         prefix = ""
-    print(prefix)
+        
+    if printing:
+        print(prefix)
 
     # We then set up our parameters to make the call
     parameters = {
