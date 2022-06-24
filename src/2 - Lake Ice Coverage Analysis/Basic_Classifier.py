@@ -31,12 +31,6 @@ import matplotlib.pyplot as plt
 
 # COMMAND ----------
 
-# MAGIC %sh
-# MAGIC cd /dbfs/FileStore/shared_uploads/sstil051@uottawa.ca/
-# MAGIC ls
-
-# COMMAND ----------
-
 X = pd.read_csv("./lakeice_measurements.csv")
 X['DATE'] = pd.to_datetime(X['DATE'], errors='coerce')
 X['YEAR'] = X['DATE'].dt.year
