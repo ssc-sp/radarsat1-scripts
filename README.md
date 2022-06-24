@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
     <img src="https://github.com/asc-csa/radarsat1-scripts/blob/main/radarsat1-image.jpg?raw=true" height="200">
 </p>
 
@@ -16,7 +16,10 @@
         <img alt="Contributeurs sur GitHub | GitHub contributors" src="https://img.shields.io/github/contributors/ssc-sp/radarsat1-scripts">
     </a>
     <a href="https://twitter.com/intent/follow?screen_name=csa_asc">
-        <img alt="Suivre sur Twitter | Twitter Follow" src="https://img.shields.io/twitter/follow/ssc-sp?style=social">
+        <img alt="Suivre sur Twitter | Twitter Follow" src="https://img.shields.io/twitter/follow/csa_asc?style=social">
+    </a>
+    <a href="https://twitter.com/intent/follow?screen_name=SSC_CA">
+        <img alt="Suivre sur Twitter | Twitter Follow" src="https://img.shields.io/twitter/follow/SSC_CA?style=social">
     </a>
 </p>
 
