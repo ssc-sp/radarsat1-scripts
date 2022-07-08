@@ -23,7 +23,7 @@
     </a>
 </p>
 
-# Scripts RADARSAT-1 (English follows)
+# Example Databricks et stockage S3 utilisant les Scripts RADARSAT-1 (English follows)
 
 Dépôt dérivé [d'un dépôt de l'Agence spatiale canadienne](https://github.com/asc-csa/radarsat1-scripts) avec des modifications pour démontrer l'exécution de ces scripts dans un environnement Azure Databricks. Ce dépôt montre comment utiliser un compartiment S3 contenant des images de la Terre provenant du satellite RADARSAT-1.
 
@@ -36,7 +36,7 @@ Vous trouverez de plus amples informations sur le compartiment AWS sur le site [
 
 Traduit avec www.DeepL.com/Translator (version gratuite)
 
-# RADARSAT-1 Scripts (Le français précède)
+# Databricks and S3 storage example using RADARSAT-1 Scripts (Le français précède)
 
 Repository forked from [a Canadian Space Agency repo](https://github.com/asc-csa/radarsat1-scripts) with changes to demonstrate running these scripts within an Azure Databricks environment. This repo demonstrates how to use an S3 bucket containing Earth imagery from the RADARSAT-1 satellite
 
