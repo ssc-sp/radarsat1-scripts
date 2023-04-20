@@ -17,6 +17,10 @@
 
 # COMMAND ----------
 
+!pip install opencv-contrib-python
+
+# COMMAND ----------
+
 import plotly.express as px
 
 # COMMAND ----------

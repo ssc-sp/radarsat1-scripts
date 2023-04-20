@@ -31,7 +31,7 @@ import matplotlib.pyplot as plt
 
 # COMMAND ----------
 
-X = pd.read_csv("./lakeice_measurements.csv")
+X = pd.read_csv("./lakeice-measurements.csv")
 X['DATE'] = pd.to_datetime(X['DATE'], errors='coerce')
 X['YEAR'] = X['DATE'].dt.year
 X['MONTH'] = X['DATE'].dt.month

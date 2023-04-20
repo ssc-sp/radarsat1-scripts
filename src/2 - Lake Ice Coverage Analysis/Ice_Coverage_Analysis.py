@@ -18,7 +18,11 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install https://manthey.github.io/large_image_wheels/GDAL-3.5.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=9387d6f4a71a132a7c5a13426a2491e9aded5e0974cadb43b9d579fac92541f8
+# MAGIC %pip install https://github.com/manthey/large_image_wheels/raw/wheelhouse/GDAL-3.6.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=6cc3aaec5e27db7da796a578df1ed22306e0824973dfbea41d396c5ae22a7caf
+
+# COMMAND ----------
+
+# MAGIC %pip install opencv-contrib-python
 
 # COMMAND ----------
 
@@ -61,7 +65,15 @@ gdal.AllRegister()
 # COMMAND ----------
 
 df_r1 = pd.read_csv('./r1_data_with_aws.csv') # Reads the R1 metadata file
-df = pd.read_csv("./lakeice_measurements.csv") # Reads the data
+df = pd.read_csv("./lakeice-measurements.csv") # Reads the data
+
+# COMMAND ----------
+
+df_r1.head()
+
+# COMMAND ----------
+
+df.head()
 
 # COMMAND ----------
 
@@ -94,7 +106,7 @@ def get_month(row):
 
 # COMMAND ----------
 
-df_r1['long'] = [get_coord_1(row) for row in df_r1['scene-centre']] # Changes the coordinates to separate columnshttps://adb-588851212245547.7.azuredatabricks.net/?o=588851212245547#
+df_r1['long'] = [get_coord_1(row) for row in df_r1['scene-centre']] # Changes the coordinates to separate columns
 df_r1['lat'] = [get_coord_2(row) for row in df_r1['scene-centre']] # Changes the coordinates to separate columns
 df_r1['month'] = [get_month(row) for row in df_r1['start-date']] # Changes the date to separate columns
 df_r1['year'] = [get_year(row) for row in df_r1['start-date']] # Changes the date to separate columns
